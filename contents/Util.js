@@ -146,6 +146,7 @@ class Command {
             read -n 1 -p "Press Any Key to exit...";'`
         packageManager.exec(termCmd,(_,_2,stderr,_3)=>{
             stopSearch()
+            this.callback()
             if(cfg.debugCommands) console.log("Command: "+newCmd+"\nOutput:"+stdout+"\nstderr:"+stderr)
         })
     }
@@ -341,8 +342,13 @@ function updateSystem() {
     command += ';'
     new Command(command,
         "Error updating packages","Updating System",
-        "akonadiconsole",true,true).run()
+        "akonadiconsole",true,true, postUpdateSystem).run()
 }
+
+function postUpdateSystem() {
+   commands["checkUpdates"].run()
+}
+
 function notifBuild() {
     let arr=[]
     for(let i=0; i<packageModel.count; i++){
